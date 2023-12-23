@@ -54,6 +54,7 @@ def handle_button_clicked(data):
     button_index = int(data["_buttonid"])
     #toggle_buttons[button_index] = not toggle_buttons[button_index]
     joystick.set_button(button_index, 1)
+    eventlet.sleep(0.2)
     joystick.set_button(button_index, 0)
     print(button_index)
 
