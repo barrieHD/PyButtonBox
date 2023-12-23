@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<head>
+  <title>Flask WebSocket Example</title>
+  <link rel="stylesheet" href="static/style/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+ 
+  <div class="container ">
+    <div class="row buttstyle">
+        <input type="checkbox" class="checkbox btn btn-lg" id="1">1
+        <input type="checkbox" class="checkbox btn btn-lg" id="2"> 2
+        <input type="checkbox" class="checkbox btn btn-lg" id="3"> 3
+    </div>
+
+    <div class="row buttstyle">
+        <input type="button" class="btn btn-info btn-lg" id="4">4
+        <input type="button" class="btn btn-info btn-lg" id="5">5
+        <input type="button" class="btn btn-info btn-lg" id="6">6
+    </div>
+    <div class="row buttstyle">
+        <input type="button" class="btn btn-info btn-lg" id="7">7
+        <input type="button" class="btn btn-info btn-lg" id="8">8
+        <input type="button" class="btn btn-info btn-lg" id="9">9
+    </div>
+    <div class="row buttstyle">
+        <input type="button" class="btn btn-info btn-lg" id="10">10
+        <input type="button" class="btn btn-info btn-lg" id="11">11
+        <input type="button" class="btn btn-info btn-lg" id="12">12
+    </div>
+
+
+
+
+
+  </div>
+  <div class="container">
+    <input type="range" id="slider1" min="0" max="32768" value="50%">
+    <output id="sliderValue"></output>
+  </div>
+
+
+
+
+  <script>
+    sliderval_ = 0
+    const socket = io(); // Connect to the WebSocket server
+
+    // Slider and deadzone
+    $("input[type='range']").on("input", function () {
+      const hexValue = $(this).val() * 1;
+      sliderval_ = hexValue;
+      $("#sliderValue").text(hexValue);
+      socket.emit("sliderchanged1", { sliderval: hexValue });
+    })
+
+    const slider = document.querySelector("input[type='range']");
+    setInterval(checkAndResetSlider, 1500);
+
+    function checkAndResetSlider() {
+      if (!slider.oninput) {
+        defaultval_ = 16384;
+        if (sliderval_ > 14500 && sliderval_ < 17500) {
+          slider.val = defaultval_
+          socket.emit("sliderchanged1", { sliderval: defaultval_ });
+        }
+      }
+    }
+
+
+    //Checkboxes
+    $("input[type='checkbox']").on("click", function () {
+      const checkboxId = $(this).attr("id");
+      console.log(checkboxId)
+      //const eventName = `checkbox${checkboxId}clicked`;
+      socket.emit("checkbox_clicked", { _checkboxid: checkboxId });
+    });
+
+
+    //buttons
+    $("input[type='button']").on("click", function () {
+      const buttonid = $(this).attr("id");
+      console.log(buttonid)
+      //const eventName = `checkbox${checkboxId}clicked`;
+      socket.emit("button_clicked", { _buttonid: buttonid });
+    });
+
+
+  </script>
+</body>
+
+</html>
